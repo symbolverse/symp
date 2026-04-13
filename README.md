@@ -1,4 +1,4 @@
 # symp
-s-expression based symbolic programming framework
+S-Expression based symbolic programming framework
 
 [Playground](https://symbolverse.github.io/symp/playground)

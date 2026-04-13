@@ -1,0 +1,10 @@
+<imperative> := (ASM (ARGS <ATOMIC>+)? (VARS <ATOMIC>+)? <instr>+)
+
+<instr> := (LABEL <ATOMIC>)
+         | (CALL <ANY>+)
+         | (ASGN <ATOMIC> <ANY>)
+         | (JMPNE <ANY> <ANY> <ATOMIC>)
+         | (JMPEQ <ANY> <ANY> <ATOMIC>)
+         | (JMP <ATOMIC>)
+         | (RETURN <ANY>)
+

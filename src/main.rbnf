@@ -1,0 +1,10 @@
+<start> := (MODULE (ALIAS <ATOMIC> <alias>)* (PUBLIC <id>*)? (PRIVATE <id>*)?)
+
+<alias> := <ATOMIC>
+         | <start>
+
+<id> := (ID <ATOMIC> <code>)
+
+<code> := (IMP (ARGS <ATOMIC>*) <imp>)
+        | (DATA <ANY>)
+

@@ -1,9 +1,9 @@
-<start> := (MODULE (PUBLIC <id>*)? (PRIVATE <id>*)? (ALIAS <alias>*)?)
+<start> := (MODULE (PUBLIC <id-proc>*)? (PRIVATE <id-proc>*)? (DESCENDS <id-mod>*)?)
 
-<id> := (ID <ATOMIC> <code-or-data>)
+<id-proc> := (ID <ATOMIC> <code-or-data>)
 
 <code-or-data> := <assembly>
                 | <ANY>
 
-<alias> := (ID <ATOMIC> <start>)
+<id-mod> := (ID <ATOMIC> <start>)
 

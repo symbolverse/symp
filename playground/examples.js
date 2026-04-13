@@ -880,7 +880,7 @@ examples = {
                         (Fact
                             (CALL Tests/Fact 5)))))))
     
-    (ALIAS
+    (ALIASED
         (ID Tests
             (MODULE
                 (PUBLIC
@@ -1003,7 +1003,7 @@ examples = {
                         (CALL Trig/Tan 0)
                         (CALL Trig/Cot 0))))))
     
-    (ALIAS
+    (ALIASED
         (ID Trig
             (MODULE
                 (PUBLIC

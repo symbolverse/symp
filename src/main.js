@@ -30,34 +30,34 @@ var Main = (
                         (LIST "PUBLIC" elements))
 
                     (RULE cPrivate
-                        (LIST private cAlias))
+                        (LIST private cChild))
                     
-                    (RULE cPrivate cAlias)
+                    (RULE cPrivate cChild)
 
                     (RULE private
                         (LIST "PRIVATE" elements))
 
-                    (RULE cAlias
-                        (LIST alias ()))
+                    (RULE cChild
+                        (LIST child ()))
                     
-                    (RULE cAlias ())
+                    (RULE cChild ())
 
-                    (RULE alias
-                        (LIST "ALIAS" aliases))
+                    (RULE child
+                        (LIST "ALIASED" children))
                         
-                    (RULE aliases
-                        (LIST alias-el aliases))
+                    (RULE children
+                        (LIST child-el children))
                     
-                    (RULE aliases ())
+                    (RULE children ())
 
-                    (RULE alias-el
+                    (RULE child-el
                         (LIST "ID"
                             (LIST ATOMIC
-                                (LIST alItem
+                                (LIST chItem
                                     ()))))
                     
-                    (RULE alItem grammar)
-                    (RULE alItem ATOMIC)
+                    (RULE chItem grammar)
+                    (RULE chItem ATOMIC)
 
                     (RULE elements
                         (LIST element elements))
@@ -103,7 +103,7 @@ var Main = (
             let grph = sexpr;
             for (let i = 1; i < grph.length; i++) {
                 let elem = grph[i];
-                if (elem[0] === "ALIAS") {
+                if (elem[0] === "ALIASED") {
                     for (let j = 1; j < elem.length; j++) {
                         let id = elem[j];
                         if (!isIdentifier (id[1])) {

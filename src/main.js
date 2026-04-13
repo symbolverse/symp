@@ -38,13 +38,20 @@ var Main = (
                         (LIST "PRIVATE" elements))
 
                     (RULE cAlias
-                        (LIST alias cAlias))
+                        (LIST alias ()))
                     
-                    (RULE cAlias
-                        ())
+                    (RULE cAlias ())
 
                     (RULE alias
-                        (LIST "ALIAS"
+                        (LIST "ALIAS" aliases))
+                        
+                    (RULE aliases
+                        (LIST alias-el aliases))
+                    
+                    (RULE aliases ())
+
+                    (RULE alias-el
+                        (LIST "ID"
                             (LIST ATOMIC
                                 (LIST alItem
                                     ()))))
@@ -55,8 +62,7 @@ var Main = (
                     (RULE elements
                         (LIST element elements))
                     
-                    (RULE elements
-                        ())
+                    (RULE elements ())
 
                     (RULE element
                         (LIST "ID"
@@ -98,18 +104,21 @@ var Main = (
             for (let i = 1; i < grph.length; i++) {
                 let elem = grph[i];
                 if (elem[0] === "ALIAS") {
-                    if (!isIdentifier (elem[1])) {
-                        return {err: "Unexpected literal", path: [i, 1, 1]};
-                    }
-                    
-                    if (isAvailable (graph.children, elem[1])) {
-                        let maked = makeTree(elem[2]);
-                        if (!maked.err) {
-                            graph.children[elem[1]] = maked;
-                            //graph.children[elem[1]].parent = graph;
+                    for (let j = 1; j < elem.length; j++) {
+                        let id = elem[j];
+                        if (!isIdentifier (id[1])) {
+                            return {err: "Unexpected literal", path: [i, j, 1,  1]};
                         }
-                        else {
-                            return {err: maked.err, path: [i, 2, ...maked.path]}
+                    
+                        if (isAvailable (graph.children, id[1])) {
+                            let maked = makeTree(id[2]);
+                            if(!maked.err) {
+                                graph.children[id[1]] = maked;
+                                //graph.children[id[1]].parent = graph;
+                            }
+                            else {
+                                return {err: maked.err, path: [i, j, 2, ...maked.path]};
+                            }
                         }
                     }
                 }

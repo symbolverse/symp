@@ -191,11 +191,11 @@ examples = {
             (ASM
                 (ARGS n)
                 
-                (LABEL f0)
-                (JMPNE n 0 fn)
+                (LABEL l0)
+                (JMPNE n 0 ln)
                 (RETURN 1)
 
-                (LABEL fn)
+                (LABEL ln)
                 (RETURN
                     (CALL stdlib/mul
                         n
@@ -216,15 +216,15 @@ examples = {
             (ASM
                 (ARGS n)
                 
-                (LABEL f0)
-                (JMPNE n 0 f1)
+                (LABEL l0)
+                (JMPNE n 0 l1)
                 (RETURN 0)
                 
-                (LABEL f1)
-                (JMPNE n 1 fn)
+                (LABEL l1)
+                (JMPNE n 1 ln)
                 (RETURN 1)
 
-                (LABEL fn)
+                (LABEL ln)
                 (RETURN
                     (CALL stdlib/add
                         (CALL Fib
@@ -880,111 +880,237 @@ examples = {
                         (Fact
                             (CALL Tests/Fact 5)))))))
     
-    (ALIAS Tests
-        (MODULE
-            (PUBLIC
-                (ID Echo
-                    (ASM
-                        (ARGS a)
-                        (RETURN a)))
+    (ALIAS
+        (ID Tests
+            (MODULE
+                (PUBLIC
+                    (ID Echo
+                        (ASM
+                            (ARGS a)
+                            (RETURN a)))
 
-                (ID FritFrut
-                    (ASM
-                        (ARGS a)
-                        (VARS x)
-                        
-                        (ASGN x ("Calling" "Frit" a "Frut"))
-                        
-                        (RETURN x)))
+                    (ID FritFrut
+                        (ASM
+                            (ARGS a)
+                            (VARS x)
+                            
+                            (ASGN x ("Calling" "Frit" a "Frut"))
+                            
+                            (RETURN x)))
 
-                (ID HiBye
-                    (ASM
-                        (ARGS a)
-                        
-                        (JMPNE a "hi" l1)
-                        (RETURN "greeting")
-                        
-                        (LABEL l1)
-                        (JMPNE a "bye" l2)
-                        (RETURN "farewell")
-                        
-                        (LABEL l2)
-                        (RETURN "unknown")))
+                    (ID HiBye
+                        (ASM
+                            (ARGS a)
+                            
+                            (JMPNE a "hi" l1)
+                            (RETURN "greeting")
+                            
+                            (LABEL l1)
+                            (JMPNE a "bye" l2)
+                            (RETURN "farewell")
+                            
+                            (LABEL l2)
+                            (RETURN "unknown")))
 
-                (ID FooBar
-                    (ASM
-                        (ARGS a)
-                        (VARS result)
-                        
-                        (JMPNE a "foo" l1)
-                        (ASGN result "alpha")
-                        (JMP end)
-                        
-                        (LABEL l1)
-                        (JMPNE a "bar" l2)
-                        (ASGN result "beta")
-                        (JMP end)
+                    (ID FooBar
+                        (ASM
+                            (ARGS a)
+                            (VARS result)
+                            
+                            (JMPNE a "foo" l1)
+                            (ASGN result "alpha")
+                            (JMP end)
+                            
+                            (LABEL l1)
+                            (JMPNE a "bar" l2)
+                            (ASGN result "beta")
+                            (JMP end)
 
-                        (LABEL l2)
-                        (ASGN result "unknown")
-                        
-                        (LABEL end)
-                        (RETURN result)))
+                            (LABEL l2)
+                            (ASGN result "unknown")
+                            
+                            (LABEL end)
+                            (RETURN result)))
 
-                (ID ReverseList
-                    (ASM
-                        (ARGS input)
-                        (VARS len head tail acc)
-                        
-                        (ASGN acc ())
-                        (ASGN len (CALL stdlib/lstlen input))
-                        (JMPEQ len 0 done)
+                    (ID ReverseList
+                        (ASM
+                            (ARGS input)
+                            (VARS len head tail acc)
+                            
+                            (ASGN acc ())
+                            (ASGN len (CALL stdlib/lstlen input))
+                            (JMPEQ len 0 done)
 
-                        (LABEL loop)
-                        (JMPEQ input NIL done)
-                        (ASGN head (CALL stdlib/first input))
-                        (ASGN tail (CALL stdlib/rest input))
-                        (ASGN acc (CALL stdlib/prepend head acc))
-                        (ASGN input tail)
-                        (JMP loop)
-                        
-                        (LABEL done)
-                        (RETURN acc)))
+                            (LABEL loop)
+                            (JMPEQ input NIL done)
+                            (ASGN head (CALL stdlib/first input))
+                            (ASGN tail (CALL stdlib/rest input))
+                            (ASGN acc (CALL stdlib/prepend head acc))
+                            (ASGN input tail)
+                            (JMP loop)
+                            
+                            (LABEL done)
+                            (RETURN acc)))
 
-                (ID IsElementOf
-                    (ASM
-                        (ARGS element list)
-                        (VARS result head tail)
-                        
-                        (ASGN result FALSE)
-                        
-                        (LABEL loop)
-                        (JMPEQ list NIL done)
-                        (ASGN head (CALL stdlib/first list))
-                        (ASGN list (CALL stdlib/rest list))
-                        (JMPNE head element loop)
-                        
-                        (ASGN result TRUE)
-                        
-                        (LABEL done)
-                        (RETURN result)))
+                    (ID IsElementOf
+                        (ASM
+                            (ARGS element list)
+                            (VARS result head tail)
+                            
+                            (ASGN result FALSE)
+                            
+                            (LABEL loop)
+                            (JMPEQ list NIL done)
+                            (ASGN head (CALL stdlib/first list))
+                            (ASGN list (CALL stdlib/rest list))
+                            (JMPNE head element loop)
+                            
+                            (ASGN result TRUE)
+                            
+                            (LABEL done)
+                            (RETURN result)))
 
-                (ID Fact
-                    (ASM
-                        (ARGS n)
-                        
-                        (LABEL f0)
-                        (JMPNE n 0 fn)
-                        (RETURN 1)
+                    (ID Fact
+                        (ASM
+                            (ARGS n)
+                            
+                            (LABEL l0)
+                            (JMPNE n 0 ln)
+                            (RETURN 1)
 
-                        (LABEL fn)
-                        (RETURN
-                            (CALL stdlib/mul
-                                n
-                                (CALL Fact
-                                    (CALL stdlib/sub n 1))))))))))
+                            (LABEL ln)
+                            (RETURN
+                                (CALL stdlib/mul
+                                    n
+                                    (CALL Fact
+                                        (CALL stdlib/sub n 1)))))))))))
 `,
 "stress-1-input":
+`
+(CALL Test1)
+`,
+
+"trig":
+`
+(MODULE
+    (PUBLIC
+        (ID Test1
+            (ASM
+                (RETURN
+                    (TrigonometricTests
+                        (CALL Trig/Sin 0)
+                        (CALL Trig/Cos 0)
+                        (CALL Trig/Tan 0)
+                        (CALL Trig/Cot 0))))))
+    
+    (ALIAS
+        (ID Trig
+            (MODULE
+                (PUBLIC
+                    (ID Pi (ASM (RETURN 3.141592654)))
+                    (ID Prec (ASM (RETURN 0.0001)))
+
+                    (ID Sin
+                        (ASM
+                            (ARGS alpha)
+                            (VARS term sum n)
+                            
+                            (ASGN alpha (CALL ReduceAngle alpha))
+                            (ASGN term alpha)
+                            (ASGN sum alpha)
+                            (ASGN n 1)
+                            
+                            (LABEL loop)
+                            (JMPEQ (CALL stdlib/leq (CALL Abs term) (CALL Prec)) TRUE end)
+                            (ASGN term
+                                (CALL stdlib/div
+                                    (CALL stdlib/mul
+                                        -1
+                                        (CALL stdlib/mul
+                                            term
+                                            (CALL stdlib/mul alpha alpha)))
+                                            
+                                    (CALL stdlib/mul
+                                        (CALL stdlib/mul 2 n)
+                                        (CALL stdlib/add (CALL stdlib/mul 2 n) 1))))
+                            
+                            (ASGN sum (CALL stdlib/add sum term))
+                            (ASGN n (CALL stdlib/add n 1))
+                            (JMP loop)
+                            
+                            (LABEL end)
+                            (RETURN sum)))
+                            
+                    (ID Cos
+                        (ASM
+                            (ARGS alpha)
+                            (VARS term sum n)
+                            
+                            (ASGN alpha (CALL ReduceAngle alpha))
+                            (ASGN term 1)
+                            (ASGN sum 1)
+                            (ASGN n 1)
+                            
+                            (LABEL loop)
+                            (JMPEQ (CALL stdlib/leq (CALL Abs term) (CALL Prec)) TRUE end)
+                            (ASGN term
+                                (CALL stdlib/div
+                                    (CALL stdlib/mul
+                                        -1
+                                        (CALL stdlib/mul
+                                            term
+                                            (CALL stdlib/mul alpha alpha)))
+                                            
+                                    (CALL stdlib/mul
+                                        (CALL stdlib/sub (CALL stdlib/mul 2 n) 1)
+                                        (CALL stdlib/mul 2 n))))
+                            
+                            (ASGN sum (CALL stdlib/add sum term))
+                            (ASGN n (CALL stdlib/add n 1))
+                            (JMP loop)
+                            
+                            (LABEL end)
+                            (RETURN sum)))
+                            
+                    (ID Tan
+                        (ASM
+                            (ARGS alpha)
+                            (RETURN (CALL stdlib/div (CALL Sin alpha) (CALL Cos alpha)))))
+                            
+                    (ID Cot
+                        (ASM
+                            (ARGS alpha)
+                            (RETURN (CALL stdlib/div (CALL Cos alpha) (CALL Sin alpha))))))
+                            
+                (PRIVATE
+                    (ID Abs
+                        (ASM
+                            (ARGS n)
+
+                            (JMPEQ (CALL stdlib/leq 0 n) TRUE end)
+                            (RETURN (CALL stdlib/mul -1 n))
+                            
+                            (LABEL end)
+                            (RETURN n)))
+                    
+                    (ID ReduceAngle
+                        (ASM
+                            (ARGS alpha)
+                            
+                            (LABEL leq)
+                            (JMPEQ (CALL stdlib/leq (CALL stdlib/mul -1 (CALL Pi)) alpha) TRUE gt)
+                            (ASGN alpha (CALL stdlib/add alpha (CALL Pi)))
+                            (JMP leq)
+                            
+                            (LABEL gt)
+                            (JMPEQ (CALL stdlib/leq alpha (CALL Pi)) TRUE end)
+                            (ASGN alpha (CALL stdlib/sub alpha (CALL Pi)))
+                            (JMP gt)
+                            
+                            (LABEL end)
+                            (RETURN alpha))))))))
+`,
+"trig-input":
 `
 (CALL Test1)
 `

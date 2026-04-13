@@ -147,7 +147,7 @@
     <div id="drpdwncntnt" class="dropdown-content" style="margin-top: 8px;">
         <b><nobr>
         
-<div class="droplbl">tutorial examples</div>
+<div class="droplbl">processes</div>
 
 <div class="droplbl">&nbsp;&nbsp;&nbsp;&nbsp; 1. arguments and variables</div>
 
@@ -177,9 +177,10 @@
 
 <br/>
 
-<div class="droplbl">Tests</div>
+<div class="droplbl">modules</div>
 
-        <a href="javascript:populate('stress-1');      ">&nbsp;&nbsp;&nbsp;&nbsp; - Stress test 1</a>
+        <a href="javascript:populate('trig');           ">&nbsp;&nbsp;&nbsp;&nbsp; - Trigonometric functions</a>
+        <a href="javascript:populate('stress-1');       ">&nbsp;&nbsp;&nbsp;&nbsp; - Stress test</a>
 
 <br/>
 
@@ -424,7 +425,7 @@
             var tm = Date.now ();
             var module = await Main.parse (prog.getValue ());
             if (module.err) {
-                output1.value = "main:\n" + module.err + " at " + "(" + (module.pos.y + 1) + ", " + (module.pos.x + 1) + ")" + (module.found ? ", found: " + module.found : "");
+                output1.value = "program:\n" + module.err + " at " + "(" + (module.pos.y + 1) + ", " + (module.pos.x + 1) + ")" + (module.found ? ", found: " + module.found : "");
                 document.getElementById("tm").innerHTML = "";
             } else {
                 var tcompiled = (Date.now () - tm);

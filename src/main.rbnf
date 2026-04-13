@@ -1,10 +1,9 @@
-<start> := (MODULE (ALIAS <ATOMIC> <alias>)* (PUBLIC <id>*)? (PRIVATE <id>*)?)
+<start> := (MODULE (PUBLIC <id>*)? (PRIVATE <id>*)? (ALIAS <alias>*)?)
 
-<alias> := <ATOMIC>
-         | <start>
+<id> := (ID <ATOMIC> <code-or-data>)
 
-<id> := (ID <ATOMIC> <code>)
+<code-or-data> := <assembly>
+                | <ANY>
 
-<code> := (IMP (ARGS <ATOMIC>*) <imp>)
-        | (DATA <ANY>)
+<alias> := (ID <ATOMIC> <start>)
 

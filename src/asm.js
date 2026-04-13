@@ -209,7 +209,11 @@ var Asm = (
         }
         
         function run(module, prog, args, rootModule) {
-            let code = module.pub[prog]
+            let code = module.pub[prog];
+            if (!code) {
+                code = module.priv[prog];
+            }
+            
             if (args.length !== code.args.length) {
                 return ["ERROR", `"Argument count for '${prog}' not matching"`];
             }

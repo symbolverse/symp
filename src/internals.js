@@ -10,7 +10,7 @@ const quoteHelper = {
 
 const STDLIB = {
   /*
-  TYPE CHECKING FUNCTIONS
+  TYPE RELATED FUNCTIONS
   */
   
   islist(expr) {
@@ -29,13 +29,37 @@ const STDLIB = {
     return (typeof expr === 'boolean');
   },
     
+  tokenize (expr) {
+    if (!Number.isNaN(Number(expr))) {
+      return Number(expr);
+    }
+    else if (expr === "TRUE") {
+      return true;
+    }
+    else if(expr === "FALSE") {
+      return false;
+    }
+    else if(expr === "NIL") {
+      return null;
+    }
+    else {
+      return expr;
+    }
+  },
+
   /*
   LIST FUNCTIONS
   */
   
   // (nth num list) -> elem
   nth(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      !Array.isArray(args[1]) ||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+    
     if(args[1] === null || args[1].length > agrs[2])
         return ["ERROR", `"'nth' on nonexisting index"`];
     else if(args[1].length === agrs[2])
@@ -46,7 +70,12 @@ const STDLIB = {
   
   // (prepend elem lst) -> list
   prepend(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      !Array.isArray(args[2])
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+    
     if(args[2] === null)
       return [args[1]];
     else
@@ -55,7 +84,12 @@ const STDLIB = {
   
   // (append elem lst) -> list
   append(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      !Array.isArray(args[1])
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     if(args[2] === null)
       return [args[1]];
     else
@@ -64,13 +98,24 @@ const STDLIB = {
   
   // (concat lst lst) -> lst
   concat(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      !Array.isArray(args[1]) ||
+      !Array.isArray(args[2])
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return [...args[1], ...args[2]];
   },
   
   // (first lst) -> elem
   first(args) {
-    if (args.length !== 2) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 2 ||
+      !Array.isArray(args[1])
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     if(args[1] === null || args[1].length === 0)
         return ["ERROR", `"'first' on empty list"`];
     else
@@ -79,7 +124,12 @@ const STDLIB = {
   
   // (rest lst) -> list
   rest(args) {
-    if (args.length !== 2) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 2 ||
+      !Array.isArray(args[1])
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     if(args[1] === null || args[1].length === 0)
         return ["ERROR", `"'rest' on empty list"`];
     else if(args[1].length === 1)
@@ -90,7 +140,12 @@ const STDLIB = {
   
   // (lstlen lst) -> num
   lstlen(args) {
-    if (args.length !== 2) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 2 ||
+      !Array.isArray(args[1])
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     if(args[1] === null)
         return 0;
     else
@@ -103,31 +158,61 @@ const STDLIB = {
 
   // (strlen str) -> num
   strlen(args) {
-    if (args.length !== 2) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 2 ||
+      typeof args[1] !== 'string'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return quoteHelper.unquote(args[1]).length.toString();
   },
 
   // (strcat str str) -> str
   strcat(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'string'||
+      typeof args[2] !== 'string'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return quoteHelper.quote("" + quoteHelper.unquote(args[1]) + quoteHelper.unquote(args[2]));
   },
 
   // (charat str num) -> str
   charat(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'string'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return quoteHelper.unquote(args[1]).charAt(args[2]);
   },
 
   // (substr str num num) -> str
   substr(args) {
-    if (args.length !== 4) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 4 ||
+      typeof args[1] !== 'string'||
+      typeof args[2] !== 'number' ||
+      typeof args[3] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return quoteHelper.quote(quoteHelper.unquote(args[1]).substring(args[2], args[3]));
   },
   
   // (strcmp str str) -> num
   strcmp(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'string'||
+      typeof args[2] !== 'string'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     if (args[1] < args[2])
       return -1;
     else if (args[1] > args[2])
@@ -142,49 +227,107 @@ const STDLIB = {
   
   // (add num num) -> num
   add(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return args[1] + args[2];
   },
   
   // (add num num) -> num
   sub(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return args[1] - args[2];
   },
   
-  // (add num num) -> num
+  // (mul num num) -> num
   mul(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return args[1] * args[2];
   },
   
-  // (add num num) -> num
+  // (div num num) -> num
   div(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return args[1] / args[2];
   },
   
-  // (mod num num) -> num
-  mod(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
-    return args[1] % args[2];
-  },
-  
-  // (add num num) -> num
+  // (pow num num) -> num
   pow(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return Math.pow(args[1], args[2]);
   },
   
   // (log num) -> num
   log(args) {
-    if (args.length !== 2) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 2 ||
+      typeof args[1] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return Math.log(args[1]);
+  },
+  
+  // (mod num num) -> num
+  mod(args) {
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
+    return args[1] % args[2];
+  },
+  
+  // (add num num) -> num
+  int(args) {
+    if (
+      args.length !== 2 ||
+      typeof args[1] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
+    return Math.floor(args[1]);
   },
   
   // (leq num num) -> bool
   leq(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'number'||
+      typeof args[2] !== 'number'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return (args[1] <= args[2]);
   },
   
@@ -194,19 +337,36 @@ const STDLIB = {
   
   // (and bool bool) -> bool
   and(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'boolean'||
+      typeof args[2] !== 'boolean'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return (args[1] && args[2]);
   },
 
   // (or bool bool) -> bool
   or(args) {
-    if (args.length !== 3) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 3 ||
+      typeof args[1] !== 'boolean'||
+      typeof args[2] !== 'boolean'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return (args[1] || args[2]);
   },
 
   // (not bool) -> bool
   not(args) {
-    if (args.length !== 2) return ["ERROR", "Parameters not valid: " + "'" + args[0] + "'"];
+    if (
+      args.length !== 2 ||
+      typeof args[1] !== 'boolean'
+    )
+      throw new Error ("Parameters not valid at calling " + "'" + args[0] + "'");
+
     return !args[1];
   }
 };

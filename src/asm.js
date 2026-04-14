@@ -215,7 +215,7 @@ var Asm = (
             }
             
             if (args.length !== code.args.length) {
-                return ["ERROR", `"Argument count for '${prog}' not matching"`];
+                throw new Error(`Argument count for '${prog}' not matching`);
             }
             
             let env = {};
@@ -232,7 +232,7 @@ var Asm = (
                 }
                 else if (instr.kind == "ASGN") {
                     if (code.vars.indexOf (instr.var) === -1 && code.args.indexOf (instr.var) === -1) {
-                        return ["ERROR", `"Undeclared variable or argument '${instr.var}'"`];
+                        throw new Error(`Undeclared variable or argument '${instr.var}'`);
                     }
                     
                     env[instr.var] = evalSExpr(instr.value, env, module, module, rootModule);
@@ -242,7 +242,7 @@ var Asm = (
                     let e2 = evalSExpr(instr.e2, env, module, module);
                     if (e1 !== e2) {
                         if (!Object.hasOwn(code.labels, instr.label)) {
-                            return ["ERROR", `"Nonexisting label: '${instr.label}'"`];
+                            throw new Error(`Nonexisting label '${instr.label}'`);
                         }
                         
                         idx = code.labels[instr.label];
@@ -253,7 +253,7 @@ var Asm = (
                     let e2 = evalSExpr(instr.e2, env, module, module, rootModule);
                     if (e1 === e2) {
                         if (!Object.hasOwn(code.labels, instr.label)) {
-                            return ["ERROR", `"Nonexisting label: '${instr.label}'"`];
+                            throw new Error(`Nonexisting label '${instr.label}'`);
                         }
                         
                         idx = code.labels[instr.label];
@@ -261,7 +261,7 @@ var Asm = (
                 }
                 else if (instr.kind == "JMP") {
                     if (!Object.hasOwn(code.labels, instr.label)) {
-                        return ["ERROR", `"Nonexisting label: '${instr.label}'"`];
+                        throw new Error(`Nonexisting label '${instr.label}'`);
                     }
                     
                     idx = code.labels[instr.label];
@@ -331,28 +331,18 @@ var Asm = (
             }
             else if (expr[0] === "CALL") {
                 let fn = evalSExpr(expr[1], env, module, curModule, rootModule);
-                if (fn[0] === "ERROR") {
-                    return ["CALL", fn, ...expr.slice(2)];
-                }
-                
                 let args = expr.slice(2).map(e => evalSExpr(e, env, module, curModule, rootModule));
-                let err = args.filter(e => e && e[0] === "ERROR");
-                if (err.length > 0) {
-                    return ["CALL", (fn.kind === "PROG" ? fn.prog : fn), ...args];
+                if (fn.kind == "PROG") {
+                    return evalSExpr (Main.call (fn.module, fn.prog, args), env, fn.module, fn.module, rootModule);
                 }
                 else {
-                    if (fn.kind == "PROG") {
-                        return evalSExpr (Main.call (fn.module, fn.prog, args), env, fn.module, fn.module, rootModule);
+                    let path = fn.split ("/");
+                    if (path.length === 2 && path[0] === "stdlib" && STDLIB[path[1]]) {
+                        return evalSExpr (STDLIB[path[1]] ([fn, ...args]), env, module, curModule, rootModule);
                     }
-                    else {
-                        let path = fn.split ("/");
-                        if (path.length === 2 && path[0] === "stdlib" && STDLIB[path[1]]) {
-                            return evalSExpr (STDLIB[path[1]] ([path[0], ...args]), env, module, curModule, rootModule);
-                        }
-                    }
-                    
-                    return ["ERROR", `"Program does not exists: '${fn}'"`];
                 }
+                
+                throw new Error(`Program does not exists '${fn}'`);
             }
             
             return expr.map(e => evalSExpr(e, env, module, curModule, rootModule));

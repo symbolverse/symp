@@ -196,7 +196,7 @@ var Main = (
         
         function call(module, prog, args, rootModule) {
             if (!module.pub[prog] && !module.priv[prog]) {
-                return ["ERROR", `Undefined function '${prog}'`];
+                throw new Error(`Undefined function '${prog}'`);
             }
             
             let runnable = false;
@@ -212,10 +212,15 @@ var Main = (
             }
             else {
                 if (args.length > 0) {
-                    return ["ERROR", `Unexpected arguments`];
+                    throw new Error(`Unexpected arguments`);
                 }
                 
-                return (Object.hasOwn(module.pub, prog) ? module.pub[prog] : module.priv[prog]);
+                if (Object.hasOwn(module.pub, prog)) {
+                    return module.pub[prog]
+                }
+                else if (Object.hasOwn(module.priv, prog)) {
+                    return module.priv[prog]
+                }
             }
         }
 

@@ -439,12 +439,24 @@
                         document.getElementById("tm").innerHTML = "";
                     }
                     else {
+                        let err = null;
                         var tm = Date.now ();
-                        var output = Asm.exec(expr, [], module);
+                        try {
+                            var output = Asm.exec(expr, [], module);
+                        } catch (e) {
+                            output = "RUNTIME ERROR:\n" + e.message;
+                            err = e;
+                        }        
                         setTimeout (function () {
                             var trun = (Date.now () - tm)
                             document.getElementById("tm").innerHTML = "(program parsed in " + tcompiled + "ms)" + " (program executed in " + trun + "ms)";
-                            output1.value = SExpr.stringify (output);
+                            if (err) {
+                                output1.value = output;
+                                throw err;
+                            }
+                            else {
+                                output1.value = SExpr.stringify (output);
+                            }
                         }, 0);
                     }
                     //output1.value = JSON.stringify (program, null, 4);
@@ -453,7 +465,6 @@
             output1.selectionStart = 0;
             output1.selectionEnd = 0;
         }, 0);
-        
         //var rules = await Rewriter.compileFile ("../examples/fetch.sv");
         //var output = Rewriter.rewrite (rules, "(process (lmbd x x))");
     }
